@@ -20,7 +20,7 @@ export default class ManualAdd extends Component {
 
     componentDidMount() {
         const { navigation } = this.props;
-        this.setState({barCode: navigation.getParam('res')});
+        this.setState({barCode: navigation.getParam('barcode'), name: navigation.getParam('name')});
     }
 
     mfdPress = () => {
@@ -68,6 +68,7 @@ export default class ManualAdd extends Component {
                     onChangeText={(barCode) => {this.setState({barCode})}}
                 />
                 <TextInput
+                    value = {this.state.name}
                     placeholder="Enter Product Name"
                     keyboardType="default"
                     onChangeText={(name) => {this.setState({name})}}

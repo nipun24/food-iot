@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, ActivityIndicator, Button } from 'react-native';
+import { View, Text, Button, ActivityIndicator } from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
 
 export default class Scanner extends Component {
   state = {
+    isLoading: false,
     hasCameraPermission: null
   };
 
@@ -28,11 +29,40 @@ export default class Scanner extends Component {
   };
 
   handleBarCodeRead = data => {
-    this.props.navigation.navigate('Manual',{res: data.data});
+    this.setState({isLoading: true});
+    // fetch('https://jsonplaceholder.typicode.com/users')
+    // .then(res => res.json())
+    // .then(json => console.log(json))
+    fetch('http://10.2.80.123:3000/getName', {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+          barcode: data.data
+      })
+    })
+    .then(res => res.json())
+    .then(json => {
+      console.log(json);
+      if(json === false){
+        this.setState({isLoading: false}); 
+        this.props.navigation.navigate('Manual',{barcode: data.data})      
+      }
+      else{
+        this.setState({isLoading: false})
+        this.props.navigation.navigate('Manual',{barcode: data.data,name: json.name}); 
+      }
+    })
   };
 
   render() {
-    if(this.state.hasCameraPermission === true){
+    if(this.state.isLoading){
+      return(
+        <View style = {{flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+            <ActivityIndicator size="large" style={{padding: 48}}/>
+        </View>
+    );
+    }
+    else if(this.state.hasCameraPermission === true){
       return(
         <View style = {{flex: 1}}>
           <BarCodeScanner

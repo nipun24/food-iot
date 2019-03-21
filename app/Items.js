@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ActivityIndicator, Text, FlatList } from 'react-native';
+import { View, ActivityIndicator, Text, FlatList, Alert } from 'react-native';
 
 export default class Items extends Component {
     state = {
@@ -14,8 +14,20 @@ export default class Items extends Component {
     componentDidMount = () => {
         fetch('http://10.2.80.123:3000/list')
         .then(response => response.json())
-        .then(json => this.setState({itemList: json}))
-        .then(() => {this.setState({isLoading: false})})
+        .then(json => {
+            if(json === false)
+                Alert.alert(
+                    'No items found',
+                    'Add or Scan items to add',
+                    [
+                        {text: 'OK', onPress: () => this.props.navigation.navigate('Home')}
+                    ],
+                    {cancelable: false}
+                )
+            else
+                this.setState({itemList: json})
+        })
+        .then(() => this.setState({isLoading: false}))
     }
 
     render(){
@@ -32,7 +44,7 @@ export default class Items extends Component {
                 <View>
                     <FlatList 
                         data={itemList}
-                        renderItem={({item}) => <Text style={{margin: 24}}>{item.name}</Text>}
+                        renderItem={({item}) => <Text>{item.mfd.length}</Text>}
                         keyExtractor={(item,index) => index.toString()}
                     />
                 </View>
