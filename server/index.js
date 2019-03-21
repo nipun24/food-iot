@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const MongoClient = require('mongodb').MongoClient
 const calculate = require('./calculate.js')
+const notification = require('./push.js')
 
 const app = express()
 app.use(bodyParser.json())
