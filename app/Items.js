@@ -44,7 +44,7 @@ export default class Items extends Component {
                 <View>
                     <FlatList 
                         data={itemList}
-                        renderItem={({item}) => <Text>{item.mfd.length}</Text>}
+                        renderItem={({item}) => <Text>{item.name}</Text>}
                         keyExtractor={(item,index) => index.toString()}
                     />
                 </View>

@@ -2,23 +2,34 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const MongoClient = require('mongodb').MongoClient
 const calculate = require('./calculate.js')
-const notification = require('./push.js')
+const notification = require('./notification.js')
 
 const app = express()
 app.use(bodyParser.json())
 
 const PORT = 3000
+const DAY_MS = 86400000
 
 MongoClient.connect('mongodb://localhost:27017/products',{ useNewUrlParser: true }, function (err, client) {
   if (err) throw err
   db = client.db('products')
 })
 
-//returns current date
-app.get('/', (req,res) => {
-  db.collection('food').find({"barcode":req.body.barcode}).toArray((err,results) => {
+//check daily which food item has expired
+setInterval(() => {
+  db.collection('food').find().toArray((err,results) => {
     calculate.calculate(results)
   })
+},DAY_MS)
+
+//returns current date
+app.get('/', (req,res) => {
+  // setInterval(() => {
+    db.collection('food').find().toArray((err,results) => {
+      const timeToExp = calculate.calculate(results)
+      console.log(timeToExp, "main")
+    })
+  // }, 2000)
   res.status(200).send(true)
 })
 
@@ -64,7 +75,11 @@ app.post('/add',(req,res) => {
       })
     }
     else{
-      db.collection('food').updateOne({"barcode":`${req.body.barcode}`},{$push:{"mfd":req.body.mfd.slice(0,10)}})
+      db.collection('food').updateMany({
+        "barcode":`${req.body.barcode}`},
+        {
+          $push:{"mfd":req.body.mfd.slice(0,10),"timeToExp": req.body.timeToExp}
+        })
       res.status(200).send(true)
     }
   })
