@@ -33,18 +33,18 @@ export default class Home extends Component {
         return(
             <View style={{margin: 24}} > 
                 <Button
-                    title="Scan Item"
+                    title="add item"
                     onPress={() => this.props.navigation.navigate('Scanner')}
                 />
                 <View style={{margin: 12}} ></View>
                 <Button
-                    title="View Item"
-                    onPress={() => this.props.navigation.navigate('Items')}
+                    title="remove item"
+                    onPress={() => this.props.navigation.navigate('ScannerDelete')}
                 />
                 <View style={{margin: 12}} ></View>
                 <Button
-                    title="Add Item"
-                    onPress={() => this.props.navigation.navigate('Manual')}
+                    title="view item"
+                    onPress={() => this.props.navigation.navigate('Items')}
                 />
             </View>
         );

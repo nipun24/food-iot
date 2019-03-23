@@ -49,37 +49,28 @@ app.get('/list', (req,res) => {
   })
 })
 
-app.post('/getName', (req,res) => {
-  console.log(req.body)
-  db.collection('food').find({"barcode": req.body.barcode}).toArray((err,results) => {
-    if(results.length === 0)
-      res.status(404).send(false)
-    else
-      res.status(200).send({"name": results[0].name})
+app.post('/delete', (req,res) => {
+  db.collection('food').deleteOne({$and: [{"uid": req.body.item.uid}, {"mfd": req.body.item.mfd}]}, (err,result) => {
+    if (err) {
+      console.log(err)
+      res.status(400).send(false)
+    }
+    else if (result.deletedCount === 0) {
+      res.status(200).send(false)
+    }
+    else {
+      res.send(200).send(true)
+    }
   })
 })
 
 //add items to database
 app.post('/add',(req,res) => {
-  db.collection('food').find({"barcode": req.body.barcode}).toArray((err,results) => {
-    if(results.length === 0){
-      db.collection('food').insertOne({
-        "name": req.body.name,
-        "barcode": req.body.barcode,
-        "mfd": [req.body.mfd.slice(0,10)],
-        "exp": req.body.exp,
-        "timeToExp": [req.body.timeToExp]
-      },(err,result) => {
-        if (err) throw err
-        res.status(200).send(true)
-      })
+  db.collection('food').insertOne(req.body.item, (err,result) => {
+    if (err) {
+      res.send(400).send(false)
     }
     else{
-      db.collection('food').updateMany({
-        "barcode":`${req.body.barcode}`},
-        {
-          $push:{"mfd":req.body.mfd.slice(0,10),"timeToExp": req.body.timeToExp}
-        })
       res.status(200).send(true)
     }
   })

@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { View, Text, Button, ActivityIndicator, Alert, ToastAndroid } from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
 
-export default class Scanner extends Component {
+export default class ScannerDelete extends Component {
   state = {
     isLoading: false,
     hasCameraPermission: null
   };
 
   static navigationOptions = {
-    title: 'Add Item',
+    title: 'Remove Item',
   };
 
   componentDidMount() {
@@ -30,24 +30,26 @@ export default class Scanner extends Component {
 
   handleBarCodeRead = data => {
     this.setState({isLoading: true});
-    fetch('http://10.2.80.123:3000/add', {
+    fetch('http://10.2.80.123:3000/delete', {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
           item: JSON.parse(data.data)
       })
     })
-    .then(res => res.json())
-    .then(json => {
-      console.log(json)
-      if(json){
-        ToastAndroid.show('Item Added Successfully', ToastAndroid.SHORT);
-        this.props.navigation.navigate('Home');
-      }
-      else {
-        Alert.alert('Can not add item! Try Again');
-        this.props.navigation.navigate('Home');
-      }
+    .then(res => {
+        if(res.status === 400){
+            Alert.alert('Can not remove item! Try again');
+            this.props.navigation.navigate('Home');
+        }
+        else if(res.status === 200 && res._bodyText === "false") {
+            Alert.alert('No item found. Add item first');
+            this.props.navigation.navigate('Home');
+        }
+        else {
+            ToastAndroid.show('Item removed', ToastAndroid.SHORT);
+            this.props.navigation.navigate('Home');
+        }
     })
   };
 
