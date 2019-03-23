@@ -1,6 +1,16 @@
 import React, { Component } from 'react';
 import { View, ActivityIndicator, Text, FlatList, Alert } from 'react-native';
 
+const ItemComponent = ({name, mfd, uid}) => {
+    return(
+        <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row',paddingTop: 20}}>
+            <Text style={{ flex: 1, alignSelf: 'stretch' }}>{uid}</Text>
+            <Text style={{ flex: 1, alignSelf: 'stretch' }}>{name}</Text>
+            <Text style={{ flex: 1, alignSelf: 'stretch' }}>{mfd}</Text>
+        </View>
+    )
+}
+
 export default class Items extends Component {
     state = {
         itemList: null,
@@ -41,11 +51,21 @@ export default class Items extends Component {
         }
         else {
             return(
-                <View>
+                <View style = {{flexDirection:'column', paddingTop:10, paddingLeft: 32}}>
+                    <View style={{ alignSelf: 'stretch', flexDirection: 'row'}}>
+                        <Text style={{fontSize:20, fontWeight: 'bold', flex: 1, alignSelf: 'stretch'}}>UID</Text>
+                        <Text style={{fontSize:20, fontWeight: 'bold', flex: 1, alignSelf: 'stretch'}}>Name</Text>
+                        <Text style={{fontSize:20, fontWeight: 'bold', flex: 1, alignSelf: 'stretch'}}>MFD</Text>
+                    </View>
                     <FlatList 
-                        data={itemList}
-                        renderItem={({item}) => <Text>{item.name}</Text>}
-                        keyExtractor={(item,index) => index.toString()}
+                    data={itemList}
+                    renderItem={({item}) => 
+                        <ItemComponent
+                            name = {item.name}
+                            uid = {item.uid}
+                            mfd = {item.mfd}
+                        />}
+                    keyExtractor={(item,index) => index.toString()}
                     />
                 </View>
             );

@@ -18,25 +18,27 @@ MongoClient.connect('mongodb://localhost:27017/products',{ useNewUrlParser: true
 //check daily which food item has expired
 setInterval(() => {
   db.collection('food').find().toArray((err,results) => {
-    calculate.calculate(results)
+    const res = calculate.calculate(results)
+    for(i=0; i < res[0].length; i++){
+      db.collection('food').deleteOne({$and: [{"uid": res[0][i]}, {"mfd": res[1][i]}]}, (err,result) => {
+        if (err) {
+          console.log(err)
+          res.status(400).send(false)
+        }
+        else if (result.deletedCount === 0) {
+          res.status(200).send(false)
+        }
+        else {
+          res.send(200).send(true)
+        }
+      })
+    }
   })
 },DAY_MS)
 
-//returns current date
+// test/debug route
 app.get('/', (req,res) => {
-  // setInterval(() => {
-    db.collection('food').find().toArray((err,results) => {
-      const timeToExp = calculate.calculate(results)
-      console.log(timeToExp, "main")
-    })
-  // }, 2000)
   res.status(200).send(true)
-})
-
-//save expo notification token
-app.post('/token', (req,res) => {
-  console.log(req.body)
-  res.send("success")
 })
 
 //send all the items
@@ -52,7 +54,6 @@ app.get('/list', (req,res) => {
 app.post('/delete', (req,res) => {
   db.collection('food').deleteOne({$and: [{"uid": req.body.item.uid}, {"mfd": req.body.item.mfd}]}, (err,result) => {
     if (err) {
-      console.log(err)
       res.status(400).send(false)
     }
     else if (result.deletedCount === 0) {
@@ -66,11 +67,14 @@ app.post('/delete', (req,res) => {
 
 //add items to database
 app.post('/add',(req,res) => {
+  const { mfd } = req.body.item
+  const timeToExp = mfd.slice(0,4)*365 + mfd.slice(5,7)*30 + mfd.slice(8,10)*1 
+  Object.assign(req.body.item, {timeToExp})
   db.collection('food').insertOne(req.body.item, (err,result) => {
     if (err) {
       res.send(400).send(false)
     }
-    else{
+    else {
       res.status(200).send(true)
     }
   })
