@@ -1,4 +1,4 @@
-#IoT Food Management
+# IoT Food Management
 
 The main idea behind this project is to replace barcodes on products (mainly food) with QR codes. QR codes can store much more data than a barcode. 
 
