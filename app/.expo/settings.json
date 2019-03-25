@@ -1,7 +1,7 @@
 {
+  "urlRandomness": "2k-jfc",
   "hostType": "lan",
   "lanType": "ip",
   "dev": true,
-  "minify": false,
-  "urlRandomness": "rj-sdv"
+  "minify": false
 }
