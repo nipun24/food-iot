@@ -45,13 +45,25 @@ export default class Home extends Component {
         })
     }
 
+    sendToken = async () => {
+        fetch(BACKEND_URL + '/token', {
+            method: 'post',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                token: this.state.token
+            })
+          })
+    }
+
     componentDidMount() {
         this.requestNotificationPermission();   
         this.getItems();     
+        // this.sendToken();
     }
 
     componentDidUpdate() {
-        this.getItems();        
+        this.getItems(); 
+        // this.sendToken();       
     }
 
     requestNotificationPermission = async () => {
@@ -59,13 +71,14 @@ export default class Home extends Component {
         if(res.status === "granted"){
             let token = await Notifications.getExpoPushTokenAsync()
             this.setState({token});
-            console.log(token);
         }
         await Notifications.createChannelAndroidAsync('default',{
             name: 'default',
             sound: true,
             priority: 'max'
         });
+        
+        this.sendToken();
     };
 
     render(){

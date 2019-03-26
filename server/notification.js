@@ -1,7 +1,7 @@
 const fetch = require('node-fetch')
-const EXPO_PUSH_TOKEN = require('./constants.js').EXPO_PUSH_TOKEN
+
 module.exports = {
-    sendNotification: (title, body) => {
+    sendNotification: (title, body, token) => {
         fetch('https://exp.host/--/api/v2/push/send',{
             method: 'POST',
             headers: {'Content-Type':'application/json'},

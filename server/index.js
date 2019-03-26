@@ -9,6 +9,7 @@ app.use(bodyParser.json())
 
 const PORT = 3000
 const DAY_MS = 86400000
+var token = null
 
 MongoClient.connect('mongodb://localhost:27017/products',{ useNewUrlParser: true }, function (err, client) {
   if (err) throw err
@@ -38,7 +39,13 @@ setInterval(() => {
 
 // test/debug route
 app.get('/', (req,res) => {
-  notification.sendNotification("test","demo")
+  notification.sendNotification("test","demo",token)
+  res.status(200).send(true)
+})
+
+// display token 
+app.post('/token',(req,res) => {
+  token = req.body.token
   res.status(200).send(true)
 })
 
