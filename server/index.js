@@ -38,6 +38,7 @@ setInterval(() => {
 
 // test/debug route
 app.get('/', (req,res) => {
+  notification.sendNotification("test","demo")
   res.status(200).send(true)
 })
 
@@ -60,7 +61,7 @@ app.post('/delete', (req,res) => {
       res.status(200).send(false)
     }
     else {
-      res.send(200).send(true)
+      res.status(200).send(true)
     }
   })
 })

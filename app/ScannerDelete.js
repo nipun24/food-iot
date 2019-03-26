@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Button, ActivityIndicator, Alert, ToastAndroid } from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
+import {BACKEND_URL} from './Constants.js';
 
 export default class ScannerDelete extends Component {
   state = {
@@ -30,7 +31,7 @@ export default class ScannerDelete extends Component {
 
   handleBarCodeRead = data => {
     this.setState({isLoading: true});
-    fetch('http://10.2.80.123:3000/delete', {
+    fetch(BACKEND_URL + '/delete', {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({

@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import Scanner from './Scanner';
 import Home from './Home';
-import Items from './Items';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import ScannerDelete from './ScannerDelete';
+import ItemComponent from './ItemComponent.js';
 
 
 const RootStack = createStackNavigator(
   {
     Home: Home,
     Scanner: Scanner,
-    Items: Items,
-    ScannerDelete: ScannerDelete
+    ScannerDelete: ScannerDelete,
+    ItemComponent: ItemComponent,
   },
   {
     initialRouteName: 'Home',
