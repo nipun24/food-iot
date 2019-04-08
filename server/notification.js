@@ -6,7 +6,7 @@ module.exports = {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({
-                to: EXPO_PUSH_TOKEN,
+                to: token,
                 title: title,
                 body: body,
                 channelId: "default"

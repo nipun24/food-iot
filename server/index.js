@@ -37,16 +37,36 @@ setInterval(() => {
   })
 },DAY_MS)
 
-// test/debug route
-app.get('/', (req,res) => {
-  notification.sendNotification("test","demo",token)
+app.get('/',(req,res) => {
+  notification.sendNotification("hello","test","ExponentPushToken[33IDmiOOvye7zuDZ6yaoAK]")
   res.status(200).send(true)
 })
 
-// display token 
-app.post('/token',(req,res) => {
-  token = req.body.token
+// test/debug route
+app.post('/test', (req,res) => {
   res.status(200).send(true)
+})
+
+//login route
+app.post('/login',(req,res) => {
+  const user = {}
+  const {userName, pwd, token} = req.body
+  db.collection('users').find({$and:[{"userName": userName},{"pwd": pwd}]}).toArray((err, result) => {
+    if(err)
+      res.status(404).send(false)
+    else if(result.length !== 0)
+      res.status(200).send(true)
+    else {
+      Object.assign(user, {userName}, {pwd}, {token})
+      db.collection('users').insertOne(user, (err,result) => {
+        if (err){
+          res.status(400).send(false)
+        }
+        else 
+          res.status(200).send(true)
+      })
+    }
+  })
 })
 
 //send all the items
@@ -59,6 +79,8 @@ app.get('/list', (req,res) => {
   })
 })
 
+
+//delete items from database
 app.post('/delete', (req,res) => {
   db.collection('food').deleteOne({$and: [{"uid": req.body.item.uid}, {"mfd": req.body.item.mfd}]}, (err,result) => {
     if (err) {

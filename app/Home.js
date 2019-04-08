@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, Alert } from 'react-native';
-import { Permissions, Notifications } from 'expo';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Button, Image } from 'react-native';
 import {BACKEND_URL} from './Constants.js';
 
 const styles = StyleSheet.create({
@@ -11,7 +9,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center', 
         right: 0, 
         bottom: 64,
-        elevation: 8
+        elevation: 8,
+        backgroundColor: '#8bc34a',
+        borderRadius: 32
         },
     fab2: { 
         position: 'absolute', 
@@ -19,19 +19,20 @@ const styles = StyleSheet.create({
         justifyContent: 'center', 
         right: 0, 
         bottom: 0,
-        elevation: 8
+        elevation: 8,
+        backgroundColor: '#f44336',
+        borderRadius: 32
         }
 })
 
 export default class Home extends Component {
     state = {
-        token: null,
         itemList: null,
         isLoading: true
     }
 
     static navigationOptions = {
-        title: 'Home',
+        headerTitle: 'Home',
     };
 
     getItems = () => {
@@ -45,41 +46,13 @@ export default class Home extends Component {
         })
     }
 
-    sendToken = async () => {
-        fetch(BACKEND_URL + '/token', {
-            method: 'post',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                token: this.state.token
-            })
-          })
-    }
-
     componentDidMount() {
-        this.requestNotificationPermission();   
-        this.getItems();     
-        // this.sendToken();
+        this.getItems();
     }
 
     componentDidUpdate() {
-        this.getItems(); 
-        // this.sendToken();       
+        this.getItems();       
     }
-
-    requestNotificationPermission = async () => {
-        const res = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-        if(res.status === "granted"){
-            let token = await Notifications.getExpoPushTokenAsync()
-            this.setState({token});
-        }
-        await Notifications.createChannelAndroidAsync('default',{
-            name: 'default',
-            sound: true,
-            priority: 'max'
-        });
-        
-        this.sendToken();
-    };
 
     render(){
         this.getItems;
@@ -89,17 +62,15 @@ export default class Home extends Component {
                 <View style = {{flex: 1, margin: 24, alignItems: 'center', justifyContent: 'center' }} >
                     <Text>No Items Found</Text>
                     <TouchableOpacity style={styles.fab1} onPress={() => this.props.navigation.navigate('Scanner')}>
-                        <Ionicons  
-                            name="ios-add-circle" 
-                            size={64} 
-                            color="#8bc34a"
+                        <Image  
+                            source={require('./assets/add.png')} 
+                            style={{margin:7}}
                         />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.fab2} onPress={() => this.props.navigation.navigate('ScannerDelete')}>
-                        <Ionicons  
-                            name="ios-close-circle" 
-                            size={64} 
-                            color="#f44336"
+                        <Image  
+                            source={require('./assets/delete.png')} 
+                            style={{margin:7}}
                         />
                     </TouchableOpacity>
                 </View>
@@ -127,17 +98,15 @@ export default class Home extends Component {
                     keyExtractor={(item,index) => index.toString()}
                     />
                     <TouchableOpacity style={styles.fab1} onPress={() => this.props.navigation.navigate('Scanner')}>
-                        <Ionicons  
-                            name="ios-add-circle" 
-                            size={64} 
-                            color="#8bc34a"
+                        <Image  
+                            source={require('./assets/add.png')} 
+                            style={{margin:7}}
                         />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.fab2} onPress={() => this.props.navigation.navigate('ScannerDelete')}>
-                        <Ionicons  
-                            name="ios-close-circle" 
-                            size={64} 
-                            color="#f44336"
+                        <Image  
+                            source={require('./assets/delete.png')} 
+                            style={{margin:7}}
                         />
                     </TouchableOpacity>
                 </View>
