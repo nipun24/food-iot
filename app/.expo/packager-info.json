@@ -1,7 +1,7 @@
 {
-  "expoServerNgrokUrl": "https://v4-yd6.nipun24.app.exp.direct",
-  "packagerNgrokUrl": "https://packager.v4-yd6.nipun24.app.exp.direct",
-  "ngrokPid": 5028,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "devToolsPort": 19002,
   "expoServerPort": null,
   "packagerPort": null,

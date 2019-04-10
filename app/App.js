@@ -26,7 +26,7 @@ export default class App extends Component {
   state = {
     isAppReady: false,
     isSplashReady: false,
-    isLoggedIn: true
+    isLoggedIn: false
   }
 
   componentDidUpdate() {
@@ -34,8 +34,7 @@ export default class App extends Component {
   }
 
   login = () => {
-    console.log('login')
-    // this.setState({isLoggedIn: true})
+    this.setState({isLoggedIn: true})
   }
 
   render(){

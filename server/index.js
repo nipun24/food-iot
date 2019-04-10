@@ -8,37 +8,34 @@ const app = express()
 app.use(bodyParser.json())
 
 const PORT = 3000
+//24 hours in milliseconds
 const DAY_MS = 86400000
+// const DAY_MS = 1000
 var token = null
 
 MongoClient.connect('mongodb://localhost:27017/products',{ useNewUrlParser: true }, function (err, client) {
   if (err) throw err
   db = client.db('products')
+  //check daily which food item has expired
+  setInterval(() => {
+    db.collection('food').find().toArray((err,results) => {
+      const res = calculate.calculate(results)
+      if(res!==null){
+        for(i=0; i < res[0].length; i++){
+          db.collection('food').deleteOne({$and: [{"uid": res[0][i]}, {"mfd": res[1][i]}]}, (err,result) => {
+            if (err)
+              throw err       
+          })
+        }
+      }
+    })
+  },60000)
 })
 
-//check daily which food item has expired
-setInterval(() => {
-  db.collection('food').find().toArray((err,results) => {
-    const res = calculate.calculate(results)
-    for(i=0; i < res[0].length; i++){
-      db.collection('food').deleteOne({$and: [{"uid": res[0][i]}, {"mfd": res[1][i]}]}, (err,result) => {
-        if (err) {
-          console.log(err)
-          res.status(400).send(false)
-        }
-        else if (result.deletedCount === 0) {
-          res.status(200).send(false)
-        }
-        else {
-          res.send(200).send(true)
-        }
-      })
-    }
-  })
-},DAY_MS)
+
 
 app.get('/',(req,res) => {
-  notification.sendNotification("hello","test","ExponentPushToken[33IDmiOOvye7zuDZ6yaoAK]")
+  notification.sendNotification("hello","test")
   res.status(200).send(true)
 })
 
