@@ -29,19 +29,20 @@ MongoClient.connect('mongodb://localhost:27017/products',{ useNewUrlParser: true
         }
       }
     })
-  },60000)
+  },DAY_MS)
 })
 
 
 
 app.get('/',(req,res) => {
-  notification.sendNotification("hello","test")
-  res.status(200).send(true)
+  res.status(200).send('server running')
 })
 
 // test/debug route
-app.post('/test', (req,res) => {
-  res.status(200).send(true)
+app.get('/test', (req,res) => {
+  notification.sendEmail('test','all is working')
+  // notification.sendNotification("hello","test")
+  res.status(200).send('sent email and notification')
 })
 
 //login route
@@ -87,6 +88,7 @@ app.post('/delete', (req,res) => {
       res.status(200).send(false)
     }
     else {
+      notification.sendEmail(`Item deleted`, `${req.body.item.name} has been removed from your inventory`)
       res.status(200).send(true)
     }
   })

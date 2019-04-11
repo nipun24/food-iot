@@ -13,13 +13,15 @@ module.exports = {
             //checking if item has expired or not
                 //condition for item has expired
             if(timeLeft <= 0){
-                // notification.sendNotification(`${food[i].name} expired`, `${food[i].name} has expired and removed from the database.`)
+                notification.sendNotification(`${food[i].name} expired`, `${food[i].name} has expired and removed from the database.`)
+                notification.sendEmail('Item Expired', `${food[i].name} has expired and removed from the database.`)
                 mfd.push(food[i].mfd)
                 uid.push(food[i].uid)
             }
             //1 week left for item to expire send notification
             else if(timeLeft > 0 && timeLeft <= 7){
-                // notification.sendNotification(`${food[i].name} is about to expire`, `${food[i].name} will expire in ${timeLeft} day(s)`)
+                notification.sendNotification(`${food[i].name} is about to expire`, `${food[i].name} will expire in ${timeLeft} day(s)`)
+                notification.sendEmail('Item about to expire', `${food[i].name} will expire in ${timeLeft} day(s)`)
             }
         }
         return [uid, mfd]
